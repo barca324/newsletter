@@ -1,6 +1,7 @@
 from PIL import Image, ImageDraw, ImageFont
 from datetime import date
 import os
+import re
 
 
 def _load_system_font(size, bold=False):
@@ -162,12 +163,11 @@ def generate_news_image(headlines, post):
     draw.rounded_rectangle(
         (MARGIN, tk_top, WIDTH - MARGIN, HEIGHT - MARGIN), radius=20, fill=LBLUE,
     )
-    draw.ellipse((MARGIN + 20, tk_top + 24, MARGIN + 64, tk_top + 68), fill=BLUE)
-    draw.text((MARGIN + 84, tk_top + 26), "TODAY'S TAKEAWAY", font=f_tk_title, fill=BLUE)
+    draw.text((MARGIN + 20, tk_top + 26), "TODAY'S TAKEAWAY", font=f_tk_title, fill=BLUE)
 
-    summary = " ".join(str(post).split("\n")[:2]).strip()
-    sy = tk_top + 74
-    for line in _wrap_clamp(draw, summary, f_tk, WIDTH - 2 * MARGIN - 40, 2):
+    summary = re.sub(r'[^\x00-\x7F]+', ' ', " ".join(str(post).split("\n")[:4])).strip()
+    sy = tk_top + 68
+    for line in _wrap_clamp(draw, summary, f_tk, WIDTH - 2 * MARGIN - 40, 4):
         draw.text((MARGIN + 20, sy), line, font=f_tk, fill=BLACK)
         sy += 36
 
