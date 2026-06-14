@@ -111,7 +111,7 @@ def generate_news_image(headlines, post):
     draw.line((MARGIN, 258, WIDTH - MARGIN, 258), fill=BLUE, width=3)
 
     # ── Reserve the takeaway zone, then flow headlines above it ──
-    TK_H = 196
+    TK_H = 300
     tk_top = HEIGHT - MARGIN - TK_H
     content_top = 290
     content_bottom = tk_top - 24
@@ -165,9 +165,9 @@ def generate_news_image(headlines, post):
     )
     draw.text((MARGIN + 20, tk_top + 26), "TODAY'S TAKEAWAY", font=f_tk_title, fill=BLUE)
 
-    summary = re.sub(r'[^\x00-\x7F]+', ' ', " ".join(str(post).split("\n")[:4])).strip()
+    summary = re.sub(r'[^\x00-\x7F]+', ' ', " ".join(str(post).split("\n")[:6])).strip()
     sy = tk_top + 68
-    for line in _wrap_clamp(draw, summary, f_tk, WIDTH - 2 * MARGIN - 40, 4):
+    for line in _wrap_clamp(draw, summary, f_tk, WIDTH - 2 * MARGIN - 40, 6):
         draw.text((MARGIN + 20, sy), line, font=f_tk, fill=BLACK)
         sy += 36
 
