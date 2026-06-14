@@ -3,9 +3,9 @@ import os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from datetime import datetime
+from email.mime.image import MIMEImage
 
-
-def send_draft_email(subject: str, post: str, headlines: list[dict]) -> None:
+def send_draft_email(subject: str, post: str, headlines: list[dict],image_path: str | None = None) -> None:
     """Send the draft post + raw headlines to your email via Gmail SMTP."""
     smtp_user = os.environ["GMAIL_USER"]
     smtp_pass = os.environ["GMAIL_APP_PASSWORD"]
@@ -34,11 +34,25 @@ def send_draft_email(subject: str, post: str, headlines: list[dict]) -> None:
     </body></html>
     """
 
-    msg = MIMEMultipart("alternative")
+    msg = MIMEMultipart()
     msg["Subject"] = f"AInew.in Draft — {today}"
     msg["From"]    = smtp_user
     msg["To"]      = to_email
     msg.attach(MIMEText(html, "html"))
+
+    if image_path and os.path.exists(image_path):
+
+        with open(image_path, "rb") as f:
+
+           img = MIMEImage(f.read())
+
+        img.add_header(
+        "Content-Disposition",
+        "attachment",
+        filename="daily_news.png"
+        )
+
+        msg.attach(img)
 
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
         server.login(smtp_user, smtp_pass)
