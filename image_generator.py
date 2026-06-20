@@ -71,7 +71,7 @@ def _prepare_logo(max_w=240, max_h=100):
     return logo
 
 
-def generate_news_image(headlines, post):
+def generate_news_image(headlines, post, takeaway=None):
     WIDTH, HEIGHT = 1080, 1350
     MARGIN = 44
     BG = (255, 255, 255)
@@ -165,7 +165,8 @@ def generate_news_image(headlines, post):
     )
     draw.text((MARGIN + 20, tk_top + 26), "TODAY'S TAKEAWAY", font=f_tk_title, fill=BLUE)
 
-    summary = re.sub(r'[^\x00-\x7F]+', ' ', " ".join(str(post).split("\n")[:6])).strip()
+    summary = takeaway or post
+    summary = re.sub(r'[^\x00-\x7F]+', ' ', " ".join(str(summary).split("\n")[:6])).strip()
     sy = tk_top + 68
     for line in _wrap_clamp(draw, summary, f_tk, WIDTH - 2 * MARGIN - 40, 6):
         draw.text((MARGIN + 20, sy), line, font=f_tk, fill=BLACK)

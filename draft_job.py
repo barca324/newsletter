@@ -11,12 +11,13 @@ from image_generator import generate_news_image
 
 def main() -> None:
     print("Searching today's AI news via Gemini...")
-    post, headlines = fetch_and_generate_post()
+    post, takeaway, headlines = fetch_and_generate_post()
     
 
     image_path = generate_news_image(
       headlines,
-      post
+      post,
+      takeaway,
     )
 
     print("\n--- DRAFT POST ---")

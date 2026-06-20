@@ -16,6 +16,32 @@ def _parse_json(text: str):
         raise
 
 
+def _clean_text(text: str) -> str:
+    return text.strip().replace("```", "").replace("```json", "").strip()
+
+
+def _generate_takeaway(client, post: str) -> str:
+    if not post or not post.strip():
+        return "AI headlines today underline the fast pace of innovation and strategic momentum across the industry."
+
+    prompt = f"""You are the editor of an AI newsletter called AInews.in.
+
+Here is the full LinkedIn post produced earlier:
+{post}
+
+Return ONLY one complete paragraph (no markdown, no hashtags, no bullet list).
+The takeaway should be a standalone closing insight that summarizes today's AI news in 2 sentences.
+It must be distinct from the original post and fully complete on its own.
+"""
+
+    response = client.chat.completions.create(
+        model="google/gemini-2.5-flash",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=300,
+    )
+    return _clean_text(response.choices[0].message.content)
+
+
 def fetch_and_generate_post():
     feed = feedparser.parse(
         "https://news.google.com/rss/search?q=artificial+intelligence&hl=en-IN&gl=IN&ceid=IN:en"
@@ -87,4 +113,5 @@ Rules:
             "published": r["published"],
         })
 
-    return post, headlines
+    takeaway = _generate_takeaway(client, post)
+    return post, takeaway, headlines
